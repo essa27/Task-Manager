@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_TASKS 100
+#define TASK_NAME_LEN 50
+
+typedef struct {
+    int id;
+    char name[TASK_NAME_LEN];
+    int priority;
+    int completed;
+} Task;
+
+Task tasks[MAX_TASKS];
+int task_count = 0;
+
+void add_task(const char *name, int priority) {
+    if (task_count >= MAX_TASKS) {
+        printf("Task list is full!\n");
+        return;
+    }
+    tasks[task_count].id = task_count + 1;
+    strncpy(tasks[task_count].name, name, TASK_NAME_LEN - 1);
+    tasks[task_count].priority = priority;
+    tasks[task_count].completed = 0;
+    task_count++;
+    printf("Task added successfully!\n");
+}
+
+void complete_task(int id) {
+    for (int i = 0; i < task_count; i++) {
+        if (tasks[i].id == id) {
+            tasks[i].completed = 1;
+            printf("Task %d marked as completed!\n", id);
+            return;
+        }
+    }
+    printf("Task not found!\n");
+}
+
+void list_tasks() {
+    printf("\nTask List:\n");
+    for (int i = 0; i < task_count; i++) {
+        printf("ID: %d, Name: %s, Priority: %d, Completed: %s\n", 
+               tasks[i].id, tasks[i].name, tasks[i].priority, 
+               tasks[i].completed ? "Yes" : "No");
+    }
+}
+
+int main() {
+    int choice;
+    char name[TASK_NAME_LEN];
+    int priority, id;
+    
+    while (1) {
+        printf("\nTask Manager\n");
+        printf("1. Add Task\n");
+        printf("2. Complete Task\n");
+        printf("3. List Tasks\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        
+        switch (choice) {
+            case 1:
+                printf("Enter task name: ");
+                scanf("%s", name);
+                printf("Enter priority (1-5): ");
+                scanf("%d", &priority);
+                add_task(name, priority);
+                break;
+            case 2:
+                printf("Enter task ID to complete: ");
+                scanf("%d", &id);
+                complete_task(id);
+                break;
+            case 3:
+                list_tasks();
+                break;
+            case 4:
+                exit(0);
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
